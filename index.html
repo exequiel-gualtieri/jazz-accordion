@@ -143,7 +143,9 @@
     .pro-card img { display: block; width: 100%; height: auto; }
     .pro-card figcaption { padding: 0.75rem 1rem; font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--line); }
     .pro-card figcaption b { color: var(--text); font-family: var(--mono); margin-right: 0.5rem; }
-    .pro-cta { display: flex; flex-direction: column; justify-content: center; gap: 0.75rem; padding: 1.5rem; border-color: rgb(0 229 255 / 0.4); }
+    .pro-collection { margin: 2.25rem 0 1rem; font-size: 1.15rem; }
+    .pro-collection span { display: block; font-size: 0.875rem; font-weight: 400; color: var(--muted); margin-top: 0.2rem; }
+    .pro-cta { grid-column: 1 / -1; display: flex; flex-direction: column; justify-content: center; gap: 0.75rem; padding: 1.5rem; border-color: rgb(0 229 255 / 0.4); }
     .pro-cta h3, .pro-cta p { margin: 0; }
     .pro-cta p { color: var(--muted); }
     .pro-cta .btn { align-self: flex-start; }
@@ -328,14 +330,29 @@
     <section id="pro">
       <div class="wrap">
         <span class="eyebrow">Pro · coming soon</span>
-        <h2 style="margin-top:1rem">Pro themes: interfaces straight out of sci-fi</h2>
-        <p class="section-lead">Five premium themes inspired by film and game interfaces: holograms, retro CRT consoles, tactical displays, cockpits and dystopian cities. Same component, same API. Load one stylesheet and set <code>theme="holo"</code>.</p>
+        <h2 style="margin-top:1rem">Pro themes</h2>
+        <p class="section-lead">Eleven premium themes in two collections. Same component, same API: load one stylesheet and set <code>theme="…"</code>.</p>
+
+        <h3 class="pro-collection">Sci-Fi collection <span>Inspired by film and game interfaces</span></h3>
         <div class="pro-grid">
           <figure class="pro-card"><img src="./assets/pro/holo.png" alt="Holo theme: blue holographic accordion with corner brackets and scanlines" width="560" height="426" loading="lazy" /><figcaption><b>holo</b> Projected hologram, corner brackets, scanlines</figcaption></figure>
           <figure class="pro-card"><img src="./assets/pro/amber.png" alt="Amber theme: retro amber CRT console accordion with blinking cursor" width="560" height="403" loading="lazy" /><figcaption><b>amber</b> Retro-futurist CRT, blinking cursor</figcaption></figure>
           <figure class="pro-card"><img src="./assets/pro/tactical.png" alt="Tactical theme: gunmetal accordion with orange target brackets and hazard stripes" width="560" height="441" loading="lazy" /><figcaption><b>tactical</b> Targeting UI, hazard stripes</figcaption></figure>
           <figure class="pro-card"><img src="./assets/pro/cockpit.png" alt="Cockpit theme: minimal white thin type on dark glass with tick marks" width="560" height="426" loading="lazy" /><figcaption><b>cockpit</b> Clean flight deck on dark glass</figcaption></figure>
           <figure class="pro-card"><img src="./assets/pro/haze.png" alt="Haze theme: orange smog accordion with teal indicators" width="560" height="424" loading="lazy" /><figcaption><b>haze</b> Dystopian orange haze, teal signals</figcaption></figure>
+        </div>
+
+        <h3 class="pro-collection">Modern Product collection <span>Today's top product-design trends</span></h3>
+        <div class="pro-grid">
+          <figure class="pro-card"><img src="./assets/pro/acid.png" alt="Acid theme: black accordion with electric lime border and round lime indicator" width="560" height="438" loading="lazy" /><figcaption><b>acid</b> Black UI, electric lime accent</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/bento.png" alt="Bento theme: dark rounded tiles, open tiles filled in blue and orange" width="560" height="537" loading="lazy" /><figcaption><b>bento</b> Fintech tiles that light up in color</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/calm.png" alt="Calm theme: white rounded cards on lavender with a purple round indicator" width="560" height="480" loading="lazy" /><figcaption><b>calm</b> Soft lavender wellness UI</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/aurora.png" alt="Aurora theme: deep navy cards with purple-to-pink gradient borders and glow" width="560" height="408" loading="lazy" /><figcaption><b>aurora</b> AI-product glow, gradient borders</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/luxe.png" alt="Luxe theme: cream background, large serif headings, thin black rules and gold plus icons" width="560" height="481" loading="lazy" /><figcaption><b>luxe</b> Luxury editorial serif on cream</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/clay.png" alt="Clay theme: puffy pastel peach, mint, sky and lilac tiles with white round buttons" width="560" height="498" loading="lazy" /><figcaption><b>clay</b> Claymorphism, puffy pastel tiles</figcaption></figure>
+        </div>
+
+        <div class="pro-grid" style="margin-top:1.25rem">
           <div class="pro-card pro-cta">
             <h3>Get notified</h3>
             <p>Pro themes are launching soon. Star or watch the repository to hear about the release.</p>
