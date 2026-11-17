@@ -1,0 +1,55 @@
+{
+  "name": "jazz-accordion",
+  "version": "1.0.0",
+  "description": "Accessible, printable, themeable accordion Web Component. Zero dependencies. Drop it in from a CDN and style it with CSS variables or one of the ready-made themes.",
+  "keywords": [
+    "accordion",
+    "web-component",
+    "custom-elements",
+    "collapsible",
+    "disclosure",
+    "faq",
+    "accessibility",
+    "a11y",
+    "print",
+    "themes",
+    "css-variables",
+    "vanilla-js"
+  ],
+  "author": "Exequiel Gualtieri",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/jazz-accordion.esm.js",
+  "module": "./dist/jazz-accordion.esm.js",
+  "types": "./types/jazz-accordion.d.ts",
+  "unpkg": "./dist/jazz-accordion.min.js",
+  "jsdelivr": "./dist/jazz-accordion.min.js",
+  "exports": {
+    ".": {
+      "types": "./types/jazz-accordion.d.ts",
+      "import": "./dist/jazz-accordion.esm.js",
+      "default": "./dist/jazz-accordion.esm.js"
+    },
+    "./themes/*": "./dist/themes/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "types"
+  ],
+  "sideEffects": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs",
+    "test": "npm run build && playwright test",
+    "prepublishOnly": "npm test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "esbuild": "^0.28.2"
+  }
+}
