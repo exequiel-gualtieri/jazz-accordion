@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jazz Accordion — the accordion that prints, finds and themes</title>
+  <meta name="description" content="Accessible accordion Web Component. Prints closed panels, works with Ctrl+F, ships 9 themes, deep links, search and FAQ schema. Zero dependencies, ~8 kB." />
+  <meta name="theme-color" content="#0b0d12" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300e5ff'/%3E%3Cpath d='M9 13l7 7 7-7' stroke='%230b0d12' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+  <link rel="stylesheet" href="./src/themes/dark.css" />
+  <link rel="stylesheet" href="./src/themes/hud.css" />
+  <link rel="stylesheet" href="./src/themes/glass.css" />
+  <link rel="stylesheet" href="./src/themes/minimal.css" />
+  <link rel="stylesheet" href="./src/themes/terminal.css" />
+  <link rel="stylesheet" href="./src/themes/corporate.css" />
+  <link rel="stylesheet" href="./src/themes/brutalist.css" />
+  <link rel="stylesheet" href="./src/themes/neon.css" />
+  <link rel="stylesheet" href="./src/themes/paper.css" />
+  <script type="module" src="./src/index.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --bg-2: #11141b;
+      --surface: #161a23;
+      --line: #252b37;
+      --text: #e8eaf0;
+      --muted: #9aa3b5;
+      --accent: #00e5ff;
+      --accent-2: #ff4fd8;
+      --radius: 14px;
+      --mono: ui-monospace, 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+    body {
+      margin: 0;
+      font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); }
+    code { font-family: var(--mono); font-size: 0.9em; }
+    :not(pre) > code { background: var(--surface); border: 1px solid var(--line); padding: 0.1em 0.4em; border-radius: 6px; }
+    pre {
+      margin: 0;
+      padding: 1rem 1.15rem;
+      background: #07090d;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .tok-tag { color: #7dd3fc; } .tok-attr { color: #c4b5fd; } .tok-str { color: #86efac; } .tok-com { color: #64748b; }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav .wrap { display: flex; align-items: center; gap: 1.5rem; height: 60px; }
+    .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+    .brand svg { width: 26px; height: 26px; }
+    .nav-links { display: flex; gap: 1.25rem; margin-left: auto; overflow-x: auto; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.925rem; white-space: nowrap; }
+    .nav-links a:hover { color: var(--text); }
+    @media (max-width: 760px) { .nav-links a:not(.keep) { display: none; } }
+
+    /* Hero */
+    .hero { padding: 5rem 0 3rem; position: relative; overflow: hidden; }
+    .hero::before {
+      content: ''; position: absolute; inset: -40% -10% auto; height: 600px; z-index: -1;
+      background: radial-gradient(closest-side, rgb(0 229 255 / 0.16), transparent), radial-gradient(closest-side at 70% 40%, rgb(255 79 216 / 0.12), transparent);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3rem; align-items: center; }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+    .eyebrow { display: inline-flex; gap: 0.5rem; align-items: center; font: 600 0.8rem/1 var(--mono); color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid rgb(0 229 255 / 0.35); border-radius: 99px; padding: 0.45rem 0.8rem; }
+    h1 { font-size: clamp(2.3rem, 5vw, 3.6rem); line-height: 1.05; margin: 1.1rem 0 1rem; letter-spacing: -0.02em; }
+    h1 em { font-style: normal; background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { font-size: 1.15rem; color: var(--muted); max-width: 34rem; }
+    .cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.15rem; border-radius: 10px;
+      font: 600 0.95rem/1 inherit; text-decoration: none; cursor: pointer; border: 1px solid var(--line);
+      background: var(--surface); color: var(--text);
+    }
+    .btn.primary { background: var(--accent); color: #001014; border-color: transparent; }
+    .btn:hover { filter: brightness(1.1); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 1.75rem; margin-top: 2rem; color: var(--muted); font-size: 0.9rem; }
+    .stats b { display: block; color: var(--text); font-size: 1.35rem; }
+    .hero-demo { padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: #070a0e; }
+
+    section { padding: 4.5rem 0; border-top: 1px solid var(--line); }
+    h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); margin: 0 0 0.5rem; letter-spacing: -0.01em; }
+    h3 { margin: 2rem 0 0.75rem; }
+    .section-lead { color: var(--muted); margin: 0 0 2rem; max-width: 46rem; }
+
+    /* Problems / features */
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .card { padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); }
+    .card h3 { margin: 0.5rem 0 0.35rem; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .card .ico { font: 700 0.8rem/1 var(--mono); color: var(--accent); }
+    .card.new { border-color: rgb(0 229 255 / 0.4); }
+
+    /* Install tabs */
+    .install { display: grid; gap: 1rem; }
+    .snippet { position: relative; }
+    .snippet .copy { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+    .label { font: 600 0.75rem/1 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+
+    /* Theme gallery */
+    .themes { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+    @media (max-width: 380px) { .themes { grid-template-columns: 1fr; } }
+    .theme-card { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+    .theme-card header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: var(--bg-2); border-bottom: 1px solid var(--line); font: 600 0.85rem/1 var(--mono); }
+    .theme-card header code { color: var(--muted); }
+    .stage { padding: 1.25rem; flex: 1; }
+    .stage[data-bg='dark'] { background: #0d1017; }
+    .stage[data-bg='hud'] { background: radial-gradient(ellipse at top, #062330, #01070a 70%); }
+    .stage[data-bg='glass'] { background: linear-gradient(135deg, #6366f1, #ec4899 55%, #f59e0b); }
+    .stage[data-bg='minimal'] { background: #fafafa; color: #18181b; }
+    .stage[data-bg='terminal'] { background: #050a05; }
+    .stage[data-bg='corporate'] { background: #eef1f5; }
+    .stage[data-bg='brutalist'] { background: #a3e7fc; }
+    .stage[data-bg='neon'] { background: radial-gradient(circle at 20% 0%, #3b0764, #0c0414 65%); }
+    .stage[data-bg='paper'] { background: #f6f0e1; }
+    .stage[data-bg='default'] { background: #ffffff; color: #111827; }
+
+    /* Playground */
+    .playground { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; }
+    @media (max-width: 900px) { .playground { grid-template-columns: 1fr; } }
+    .panel-ctrl { border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; background: var(--bg-2); display: grid; gap: 0.9rem; align-content: start; }
+    .panel-ctrl label { display: flex; justify-content: space-between; align-items: center; gap: 1rem; font-size: 0.925rem; }
+    .panel-ctrl select { background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 0.4rem 0.5rem; font: inherit; font-size: 0.875rem; }
+    .panel-ctrl input[type='checkbox'] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+    .panel-ctrl hr { border: 0; border-top: 1px solid var(--line); margin: 0.25rem 0; width: 100%; }
+    .pg-out { display: grid; gap: 1rem; min-width: 0; }
+    .pg-stage { border-radius: var(--radius); border: 1px solid var(--line); padding: 1.5rem; min-height: 340px; transition: background 0.3s; }
+    .log { font: 0.8rem/1.5 var(--mono); color: var(--muted); height: 5.5rem; overflow: auto; }
+
+    /* API tables */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 560px; }
+    th, td { text-align: left; padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: var(--bg-2); color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    tr:last-child td { border-bottom: 0; }
+    td code { white-space: nowrap; }
+
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .two > *, .install > *, .hero-grid > *, .pg-out > *, .playground > * { min-width: 0; }
+    @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+
+    footer { border-top: 1px solid var(--line); padding: 2.5rem 0; color: var(--muted); font-size: 0.9rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+
+    /* The docs page itself prints nicely too */
+    @media print {
+      .nav, .cta, .playground .panel-ctrl, .copy, .hero::before { display: none !important; }
+      body { background: #fff; color: #000; }
+      section { border: 0; padding: 1.5rem 0; }
+      .hero-demo, .stage, .pg-stage { background: none !important; border: 0; padding: 0; }
+      .card, pre, .theme-card header { background: none; color: #000; }
+      .lead, .section-lead, .stats b { color: #333; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Main">
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label="Jazz Accordion home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#00e5ff"/><path d="M9 13l7 7 7-7" stroke="#0b0d12" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Jazz Accordion
+      </a>
+      <div class="nav-links">
+        <a href="#why">Why</a>
+        <a href="#install" class="keep">Install</a>
+        <a href="#themes" class="keep">Themes</a>
+        <a href="#playground">Playground</a>
+        <a href="#api" class="keep">API</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <!-- ───────────── HERO ───────────── -->
+    <div class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">Web Component · v1.0</span>
+          <h1>The accordion that <em>prints, finds and themes.</em></h1>
+          <p class="lead">
+            Drop in one script tag. Get an accordion that is accessible, shows its content when
+            printed, opens with Ctrl+F, and switches to any of 9 themes with one attribute.
+          </p>
+          <div class="cta">
+            <a class="btn primary" href="#install">Get started</a>
+            <a class="btn" href="#themes">See themes</a>
+            <button class="btn" type="button" data-print>🖨 Try printing this page</button>
+          </div>
+          <div class="stats">
+            <div><b>~8 kB</b>gzip, zero deps</div>
+            <div><b>9</b>themes</div>
+            <div><b>60+</b>CSS variables</div>
+            <div><b>WAI-ARIA</b>accordion pattern</div>
+          </div>
+        </div>
+        <div class="hero-demo">
+          <jazz-accordion theme="hud" multiple>
+            <jazz-accordion-item label="System status" subtitle="All modules nominal" open>
+              Reactor output stable at 98.6%. Shields recharging. Press <code>Ctrl+F</code> and search
+              for <strong>quantum</strong>: it lives in a closed panel below, and the browser will open it for you.
+            </jazz-accordion-item>
+            <jazz-accordion-item label="Navigation">
+              Route plotted through the Kessler belt. ETA 04:12:33.
+            </jazz-accordion-item>
+            <jazz-accordion-item label="Diagnostics">
+              Quantum relay calibrated. No anomalies detected in subsystems A–F.
+            </jazz-accordion-item>
+            <jazz-accordion-item label="Restricted" subtitle="Clearance required" disabled>
+              Classified.
+            </jazz-accordion-item>
+          </jazz-accordion>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── WHY ───────────── -->
+    <section id="why">
+      <div class="wrap">
+        <h2>Most accordions fail at the basics</h2>
+        <p class="section-lead">They hide content from printers, from Ctrl+F, from keyboards and from search engines. Jazz Accordion fixes each of these.</p>
+        <div class="grid">
+          <div class="card new"><span class="ico">print</span><h3>Prints what's hidden</h3><p>Closed panels are printed expanded by default. Choose <code>expanded</code>, <code>collapsed</code> or <code>as-is</code> per accordion or item.</p></div>
+          <div class="card new"><span class="ico">ctrl+f</span><h3>Find-in-page</h3><p>Uses <code>hidden="until-found"</code>, so the browser finds text inside closed panels and opens them automatically.</p></div>
+          <div class="card"><span class="ico">a11y</span><h3>Accessible by default</h3><p>WAI-ARIA accordion pattern, ↑ ↓ Home End navigation, real heading levels, focus rings and forced-colors support.</p></div>
+          <div class="card new"><span class="ico">#hash</span><h3>Deep links</h3><p><code>/faq#refunds</code> opens that question, even inside nested accordions. Clicking an item updates the URL.</p></div>
+          <div class="card new"><span class="ico">search</span><h3>Built-in search</h3><p>Accent-insensitive filtering with highlighted matches (CSS Custom Highlight API), announced to screen readers.</p></div>
+          <div class="card new"><span class="ico">seo</span><h3>FAQ rich results</h3><p><code>faq-schema</code> generates schema.org <code>FAQPage</code> JSON-LD from your items.</p></div>
+          <div class="card"><span class="ico">motion</span><h3>Smooth, interruptible</h3><p>Height animation you can interrupt mid-way. Turns itself off with <code>prefers-reduced-motion</code>.</p></div>
+          <div class="card"><span class="ico">secure</span><h3>CSP &amp; Trusted Types</h3><p>No <code>innerHTML</code>, no inline styles. Constructable stylesheets work under a strict Content Security Policy.</p></div>
+          <div class="card"><span class="ico">lazy</span><h3>Lazy content</h3><p>Wrap heavy content in a <code>&lt;template&gt;</code> and it renders on first open, or just before printing.</p></div>
+          <div class="card"><span class="ico">persist</span><h3>Remembers state</h3><p><code>persist="key"</code> restores open panels on the next visit, and fails safely if storage is blocked.</p></div>
+          <div class="card"><span class="ico">any</span><h3>Any framework</h3><p>React, Vue, Angular, Svelte, Astro, WordPress or plain HTML. It's a standard custom element.</p></div>
+          <div class="card"><span class="ico">rtl</span><h3>RTL &amp; i18n</h3><p>Logical CSS properties throughout, and every UI string can be set with an attribute.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── INSTALL ───────────── -->
+    <section id="install">
+      <div class="wrap">
+        <h2>Install in 10 seconds</h2>
+        <p class="section-lead">No build step. Paste two tags, or install from npm.</p>
+        <div class="two">
+          <div class="install">
+            <div>
+              <div class="label">1 · Script (CDN)</div>
+              <div class="snippet"><pre><code><span class="tok-tag">&lt;script</span> <span class="tok-attr">src</span>=<span class="tok-str">"https://cdn.jsdelivr.net/npm/jazz-accordion@1/dist/jazz-accordion.min.js"</span><span class="tok-tag">&gt;&lt;/script&gt;</span></code></pre><button class="btn copy" type="button">Copy</button></div>
+            </div>
+            <div>
+              <div class="label">2 · Theme (optional)</div>
+              <div class="snippet"><pre><code><span class="tok-tag">&lt;link</span> <span class="tok-attr">rel</span>=<span class="tok-str">"stylesheet"</span> <span class="tok-attr">href</span>=<span class="tok-str">"https://cdn.jsdelivr.net/npm/jazz-accordion@1/dist/themes/hud.css"</span> <span class="tok-tag">/&gt;</span></code></pre><button class="btn copy" type="button">Copy</button></div>
+            </div>
+            <div>
+              <div class="label">or npm</div>
+              <div class="snippet"><pre><code>npm install jazz-accordion
+
+<span class="tok-attr">import</span> <span class="tok-str">'jazz-accordion'</span>;
+<span class="tok-attr">import</span> <span class="tok-str">'jazz-accordion/themes/hud.css'</span>;</code></pre><button class="btn copy" type="button">Copy</button></div>
+            </div>
+          </div>
+          <div>
+            <div class="label">3 · Use it</div>
+            <div class="snippet"><pre><code><span class="tok-tag">&lt;jazz-accordion</span> <span class="tok-attr">theme</span>=<span class="tok-str">"hud"</span> <span class="tok-attr">multiple</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;jazz-accordion-item</span> <span class="tok-attr">label</span>=<span class="tok-str">"What is it?"</span> <span class="tok-attr">open</span><span class="tok-tag">&gt;</span>
+    An accordion that just works.
+  <span class="tok-tag">&lt;/jazz-accordion-item&gt;</span>
+  <span class="tok-tag">&lt;jazz-accordion-item</span> <span class="tok-attr">label</span>=<span class="tok-str">"Does it print?"</span><span class="tok-tag">&gt;</span>
+    Yes, closed panels included.
+  <span class="tok-tag">&lt;/jazz-accordion-item&gt;</span>
+<span class="tok-tag">&lt;/jazz-accordion&gt;</span></code></pre><button class="btn copy" type="button">Copy</button></div>
+            <h3>Rich headings</h3>
+            <div class="snippet"><pre><code><span class="tok-tag">&lt;jazz-accordion-item&gt;</span>
+  <span class="tok-tag">&lt;svg</span> <span class="tok-attr">slot</span>=<span class="tok-str">"icon"</span> …<span class="tok-tag">&gt;&lt;/svg&gt;</span>
+  <span class="tok-tag">&lt;span</span> <span class="tok-attr">slot</span>=<span class="tok-str">"title"</span><span class="tok-tag">&gt;</span>Billing <span class="tok-tag">&lt;mark&gt;</span>new<span class="tok-tag">&lt;/mark&gt;&lt;/span&gt;</span>
+  <span class="tok-tag">&lt;span</span> <span class="tok-attr">slot</span>=<span class="tok-str">"subtitle"</span><span class="tok-tag">&gt;</span>Invoices and payment methods<span class="tok-tag">&lt;/span&gt;</span>
+  Panel content…
+<span class="tok-tag">&lt;/jazz-accordion-item&gt;</span></code></pre></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── THEMES ───────────── -->
+    <section id="themes">
+      <div class="wrap">
+        <h2>Nine themes, one attribute</h2>
+        <p class="section-lead">Load the theme's CSS and set <code>theme="…"</code>. Every theme is plain CSS variables, so you can copy one and make it your own.</p>
+        <div class="themes" id="theme-gallery"></div>
+      </div>
+    </section>
+
+    <!-- ───────────── PLAYGROUND ───────────── -->
+    <section id="playground">
+      <div class="wrap">
+        <h2>Playground</h2>
+        <p class="section-lead">Change any option. The code below updates live, ready to copy.</p>
+        <div class="playground">
+          <form class="panel-ctrl" id="pg-form" aria-label="Playground options">
+            <label>Theme
+              <select name="theme">
+                <option value="">default</option>
+                <option>dark</option><option selected>hud</option><option>glass</option><option>minimal</option>
+                <option>terminal</option><option>corporate</option><option>brutalist</option><option>neon</option><option>paper</option>
+              </select>
+            </label>
+            <label>Indicator
+              <select name="indicator">
+                <option value="">theme default</option><option>chevron</option><option>plus</option><option>arrow</option><option>none</option>
+              </select>
+            </label>
+            <label>Indicator position
+              <select name="indicator-position"><option value="">end</option><option>start</option></select>
+            </label>
+            <label>Print
+              <select name="print"><option value="">expanded</option><option>collapsed</option><option>as-is</option></select>
+            </label>
+            <hr />
+            <label>multiple <input type="checkbox" name="multiple" checked /></label>
+            <label>always-open <input type="checkbox" name="always-open" /></label>
+            <label>search <input type="checkbox" name="search" checked /></label>
+            <label>controls <input type="checkbox" name="controls" checked /></label>
+            <label>no-animation <input type="checkbox" name="no-animation" /></label>
+            <hr />
+            <button class="btn" type="button" data-print>🖨 Print preview</button>
+          </form>
+          <div class="pg-out">
+            <div class="pg-stage stage" id="pg-stage" data-bg="hud">
+              <jazz-accordion id="pg" theme="hud" multiple search controls>
+                <jazz-accordion-item label="Shipping" subtitle="Delivery times and costs" open>
+                  Orders ship within 24 hours. Delivery takes 2–4 business days in Europe and 5–8 days worldwide.
+                </jazz-accordion-item>
+                <jazz-accordion-item label="Returns">
+                  You can return any item within 30 days. Refunds are processed in 3–5 days.
+                </jazz-accordion-item>
+                <jazz-accordion-item label="Payment methods">
+                  We accept cards, bank transfer and PayPal. Invoices are sent automatically.
+                </jazz-accordion-item>
+                <jazz-accordion-item label="Warranty" subtitle="Lazy-loaded panel" lazy>
+                  <template>Every product includes a 2-year warranty. (This text was rendered lazily on first open.)</template>
+                </jazz-accordion-item>
+              </jazz-accordion>
+            </div>
+            <div class="snippet"><pre><code id="pg-code"></code></pre><button class="btn copy" type="button">Copy</button></div>
+            <div>
+              <div class="label">Events</div>
+              <pre class="log" id="pg-log" aria-live="off"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── API ───────────── -->
+    <section id="api">
+      <div class="wrap">
+        <h2>API reference</h2>
+        <p class="section-lead">Attributes set on <code>&lt;jazz-accordion&gt;</code> are inherited by its items. Items can override them individually.</p>
+
+        <h3>&lt;jazz-accordion&gt; attributes</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>multiple</code></td><td>boolean</td><td>Allow several panels open at once.</td></tr>
+            <tr><td><code>always-open</code></td><td>boolean</td><td>At least one panel stays open; its header gets <code>aria-disabled</code>.</td></tr>
+            <tr><td><code>theme</code></td><td>name</td><td>Theme to apply (load its CSS file).</td></tr>
+            <tr><td><code>indicator</code></td><td><code>chevron</code> <code>plus</code> <code>arrow</code> <code>none</code></td><td>Expand/collapse icon. Themes can set it with <code>--jz-indicator</code>.</td></tr>
+            <tr><td><code>indicator-position</code></td><td><code>start</code> <code>end</code></td><td>Side of the icon.</td></tr>
+            <tr><td><code>heading-level</code></td><td>1–6 (3)</td><td><code>aria-level</code> of the headers, so they fit your document outline.</td></tr>
+            <tr><td><code>print</code></td><td><code>expanded</code> <code>collapsed</code> <code>as-is</code></td><td>What gets printed. Default: <code>expanded</code>.</td></tr>
+            <tr><td><code>no-animation</code></td><td>boolean</td><td>Disable the height animation.</td></tr>
+            <tr><td><code>search</code></td><td>boolean</td><td>Show a filter box with highlighted matches.</td></tr>
+            <tr><td><code>controls</code></td><td>boolean</td><td>Show Expand all / Collapse all (with <code>multiple</code>).</td></tr>
+            <tr><td><code>deep-link</code></td><td>boolean</td><td>Open the item whose <code>id</code> matches <code>location.hash</code>.</td></tr>
+            <tr><td><code>persist</code></td><td>key</td><td>Remember open items in <code>localStorage</code>.</td></tr>
+            <tr><td><code>faq-schema</code></td><td>boolean</td><td>Emit schema.org <code>FAQPage</code> JSON-LD for rich results.</td></tr>
+            <tr><td><code>search-label</code> <code>search-placeholder</code> <code>expand-label</code> <code>collapse-label</code> <code>results-label</code> <code>no-results-label</code></td><td>text</td><td>Translations. <code>results-label</code> accepts <code>{count}</code>.</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>&lt;jazz-accordion-item&gt;</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Attribute / slot</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>label</code></td><td>Header text. Rendered as text, never as HTML.</td></tr>
+            <tr><td><code>subtitle</code></td><td>Secondary line under the header.</td></tr>
+            <tr><td><code>open</code></td><td>Open state, reflected both ways.</td></tr>
+            <tr><td><code>disabled</code></td><td>The user cannot toggle it. It stays focusable so screen readers can find it.</td></tr>
+            <tr><td><code>lazy</code></td><td>Render the inner <code>&lt;template&gt;</code> on first open (or before printing).</td></tr>
+            <tr><td><code>title</code></td><td>Legacy alias of <code>label</code>; removed after reading so no tooltip appears.</td></tr>
+            <tr><td><code>slot="title"</code> <code>slot="subtitle"</code> <code>slot="icon"</code></td><td>Rich header content.</td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="two">
+          <div>
+            <h3>Methods</h3>
+            <div class="snippet"><pre><code><span class="tok-com">// accordion</span>
+acc.expand(<span class="tok-str">0</span>)          <span class="tok-com">// index, id or element</span>
+acc.collapse(<span class="tok-str">'refunds'</span>)
+acc.toggle(item, force?)
+acc.expandAll()  acc.collapseAll()
+acc.filter(<span class="tok-str">'query'</span>)   <span class="tok-com">// → visible count</span>
+acc.items  acc.openItems
+acc.refresh()         <span class="tok-com">// after dynamic changes</span>
+
+<span class="tok-com">// item</span>
+item.open = <span class="tok-attr">true</span>
+item.toggle()  item.expand({ animate: <span class="tok-attr">false</span> })
+item.collapse()  item.focus()</code></pre></div>
+          </div>
+          <div>
+            <h3>Events</h3>
+            <div class="table-wrap"><table style="min-width:0">
+              <thead><tr><th>Event</th><th>detail</th></tr></thead>
+              <tbody>
+                <tr><td><code>jazz-before-toggle</code> (cancelable)</td><td><code>open, item, source</code></td></tr>
+                <tr><td><code>jazz-toggle</code></td><td><code>open, item, source</code></td></tr>
+                <tr><td><code>jazz-after-toggle</code></td><td><code>open, item</code></td></tr>
+                <tr><td><code>jazz-filter</code></td><td><code>query, count</code></td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <h3>CSS variables</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Group</th><th>Variables</th></tr></thead>
+          <tbody>
+            <tr><td>Global</td><td><code>--jz-accent</code> <code>--jz-color</code> <code>--jz-bg</code> <code>--jz-font-family</code> <code>--jz-gap</code> <code>--jz-radius</code> <code>--jz-duration</code> <code>--jz-duration-fast</code> <code>--jz-easing</code></td></tr>
+            <tr><td>Item</td><td><code>--jz-item-bg</code> <code>--jz-border</code> <code>--jz-border-open</code> <code>--jz-shadow</code> <code>--jz-shadow-open</code> <code>--jz-disabled-opacity</code></td></tr>
+            <tr><td>Header</td><td><code>--jz-header-bg</code> <code>--jz-header-bg-hover</code> <code>--jz-header-bg-open</code> <code>--jz-header-color</code> <code>--jz-header-color-open</code> <code>--jz-header-padding</code> <code>--jz-header-gap</code> <code>--jz-header-font-family</code> <code>--jz-header-font-size</code> <code>--jz-header-font-weight</code> <code>--jz-header-letter-spacing</code> <code>--jz-header-text-transform</code></td></tr>
+            <tr><td>Subtitle &amp; icon</td><td><code>--jz-subtitle-color</code> <code>--jz-subtitle-font-size</code> <code>--jz-subtitle-font-weight</code> <code>--jz-subtitle-opacity</code> <code>--jz-icon-color</code> <code>--jz-icon-size</code></td></tr>
+            <tr><td>Indicator</td><td><code>--jz-indicator</code> <code>--jz-indicator-position</code> <code>--jz-indicator-color</code> <code>--jz-indicator-size</code> <code>--jz-indicator-stroke</code></td></tr>
+            <tr><td>Content</td><td><code>--jz-content-bg</code> <code>--jz-content-color</code> <code>--jz-content-padding</code> <code>--jz-content-font-size</code> <code>--jz-content-line-height</code> <code>--jz-divider</code></td></tr>
+            <tr><td>Focus</td><td><code>--jz-focus-ring</code> <code>--jz-focus-offset</code></td></tr>
+            <tr><td>Print</td><td><code>--jz-print-color</code> <code>--jz-print-bg</code> <code>--jz-print-border</code> <code>--jz-print-radius</code></td></tr>
+            <tr><td>Toolbar</td><td><code>--jz-toolbar-gap</code> <code>--jz-search-bg</code> <code>--jz-search-border</code> <code>--jz-search-color</code> <code>--jz-search-padding</code> <code>--jz-button-bg</code> <code>--jz-button-bg-hover</code> <code>--jz-button-border</code> <code>--jz-button-color</code> <code>--jz-button-padding</code> <code>--jz-highlight-bg</code> <code>--jz-highlight-color</code></td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>CSS parts</h3>
+        <p>Item: <code>item</code> <code>heading</code> <code>trigger</code> <code>icon</code> <code>title</code> <code>subtitle</code> <code>indicator</code> <code>panel</code> <code>content</code><br />
+        Accordion: <code>base</code> <code>toolbar</code> <code>search</code> <code>search-status</code> <code>controls</code> <code>control-button</code> <code>expand-all</code> <code>collapse-all</code></p>
+
+        <h3>Create your own theme</h3>
+        <div class="snippet"><pre><code><span class="tok-tag">jazz-accordion</span>[<span class="tok-attr">theme</span>=<span class="tok-str">'brand'</span>] {
+  --jz-accent: #e11d48;
+  --jz-radius: 1rem;
+  --jz-header-bg-open: #e11d48;
+  --jz-header-color-open: white;
+  --jz-indicator: plus;
+}
+<span class="tok-com">/* structural tweaks */</span>
+<span class="tok-tag">jazz-accordion</span>[<span class="tok-attr">theme</span>=<span class="tok-str">'brand'</span>] &gt; <span class="tok-tag">jazz-accordion-item</span>::part(title) {
+  font-variant: small-caps;
+}</code></pre></div>
+
+        <h3>Frameworks</h3>
+        <div class="two">
+          <div class="snippet"><pre><code><span class="tok-com">// React</span>
+<span class="tok-attr">import</span> <span class="tok-str">'jazz-accordion'</span>;
+
+useEffect(() =&gt; {
+  <span class="tok-attr">const</span> onToggle = (e) =&gt; console.log(e.detail);
+  ref.current.addEventListener(<span class="tok-str">'jazz-toggle'</span>, onToggle);
+  <span class="tok-attr">return</span> () =&gt; ref.current?.removeEventListener(<span class="tok-str">'jazz-toggle'</span>, onToggle);
+}, []);
+
+&lt;jazz-accordion ref={ref} multiple theme=<span class="tok-str">"dark"</span>&gt;…&lt;/jazz-accordion&gt;</code></pre></div>
+          <div class="snippet"><pre><code><span class="tok-com">// Angular — component metadata</span>
+schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
+<span class="tok-com">// Vue — vite.config.js</span>
+vue({ template: { compilerOptions: {
+  isCustomElement: (tag) =&gt; tag.startsWith(<span class="tok-str">'jazz-'</span>)
+}}})</code></pre></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── FAQ (dogfooding: search + deep-link + faq-schema) ───────────── -->
+    <section id="faq">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <p class="section-lead">This FAQ uses <code>search</code>, <code>deep-link</code> and <code>faq-schema</code>. Try <a href="#faq-print">#faq-print</a>.</p>
+        <jazz-accordion theme="dark" search deep-link faq-schema search-placeholder="Search the FAQ…">
+          <jazz-accordion-item id="faq-browsers" label="Which browsers are supported?">
+            All modern browsers: Chrome, Edge, Firefox and Safari (2022 or newer). Find-in-page for closed panels and search highlighting are progressive enhancements, used where the browser supports them.
+          </jazz-accordion-item>
+          <jazz-accordion-item id="faq-print" label="How does printing work?">
+            By default every panel is printed expanded, with ink-friendly colors. Use print="collapsed" to print only the headings, or print="as-is" to keep the on-screen state.
+          </jazz-accordion-item>
+          <jazz-accordion-item id="faq-frameworks" label="Can I use it with React, Vue or Angular?">
+            Yes. It is a standard custom element, so it works anywhere HTML works. See the Frameworks section for setup notes.
+          </jazz-accordion-item>
+          <jazz-accordion-item id="faq-ssr" label="Does it work without JavaScript?">
+            Content placed in the item is plain HTML in your page, so it stays visible and indexable before the script loads.
+          </jazz-accordion-item>
+          <jazz-accordion-item id="faq-license" label="What is the license?">
+            MIT. Free for personal and commercial use.
+          </jazz-accordion-item>
+        </jazz-accordion>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Jazz Accordion · MIT License</span>
+      <span>Made by Exequiel Gualtieri</span>
+    </div>
+  </footer>
+
+  <script type="module">
+    // ── Theme gallery (built with DOM APIs, no innerHTML) ──
+    const THEMES = [
+      ['default', 'No theme: adapts to the page'],
+      ['dark', 'Calm dark UI'],
+      ['hud', 'Sci-fi heads-up display'],
+      ['glass', 'Frosted glassmorphism'],
+      ['minimal', 'Hairlines, editorial'],
+      ['terminal', 'Retro phosphor CRT'],
+      ['corporate', 'Institutional, WCAG AA'],
+      ['brutalist', 'Loud and blocky'],
+      ['neon', 'Synthwave glow'],
+      ['paper', 'Warm serif editorial'],
+    ];
+    const el = (tag, props = {}, ...children) => {
+      const node = Object.assign(document.createElement(tag), props);
+      node.append(...children);
+      return node;
+    };
+
+    const gallery = document.getElementById('theme-gallery');
+    for (const [name, desc] of THEMES) {
+      const acc = el('jazz-accordion');
+      if (name !== 'default') acc.setAttribute('theme', name);
+      const items = [
+        ['Getting started', 'Install with one script tag.', true],
+        ['Customization', 'Override any CSS variable.'],
+        ['Accessibility', 'Keyboard and screen-reader ready.'],
+      ];
+      for (const [label, text, open] of items) {
+        const item = el('jazz-accordion-item', {}, text);
+        item.setAttribute('label', label);
+        if (open) item.setAttribute('open', '');
+        acc.append(item);
+      }
+      const stage = el('div', { className: 'stage' }, acc);
+      stage.dataset.bg = name;
+      const header = el('header', {}, el('span', {}, name), el('code', {}, desc));
+      gallery.append(el('article', { className: 'theme-card' }, header, stage));
+    }
+
+    // ── Playground ──
+    const form = document.getElementById('pg-form');
+    const pg = document.getElementById('pg');
+    const stage = document.getElementById('pg-stage');
+    const code = document.getElementById('pg-code');
+    const log = document.getElementById('pg-log');
+
+    function renderCode() {
+      const attrs = [...pg.attributes].filter((a) => a.name !== 'id').map((a) => (a.value === '' ? a.name : `${a.name}="${a.value}"`));
+      const theme = pg.getAttribute('theme');
+      const lines = [];
+      if (theme) lines.push(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jazz-accordion@1/dist/themes/${theme}.css" />`, '');
+      lines.push(`<jazz-accordion${attrs.length ? ' ' + attrs.join(' ') : ''}>`);
+      for (const item of pg.items) lines.push(`  <jazz-accordion-item label="${item.label}">…</jazz-accordion-item>`);
+      lines.push('</jazz-accordion>');
+      code.textContent = lines.join('\n');
+    }
+
+    form.addEventListener('change', (e) => {
+      const { name, type, checked, value } = e.target;
+      if (type === 'checkbox') pg.toggleAttribute(name, checked);
+      else if (value) pg.setAttribute(name, value);
+      else pg.removeAttribute(name);
+      if (name === 'theme') stage.dataset.bg = value || 'default';
+      renderCode();
+    });
+
+    pg.addEventListener('jazz-toggle', (e) => {
+      const { item, open, source } = e.detail;
+      log.textContent = `jazz-toggle  ${open ? 'open ' : 'close'}  "${item.label}"  source=${source}\n` + log.textContent;
+    });
+    pg.addEventListener('jazz-filter', (e) => {
+      log.textContent = `jazz-filter  query="${e.detail.query}"  count=${e.detail.count}\n` + log.textContent;
+    });
+
+    customElements.whenDefined('jazz-accordion').then(renderCode);
+
+    // ── Copy buttons & print ──
+    document.addEventListener('click', async (e) => {
+      const copy = e.target.closest('.copy');
+      if (copy) {
+        const text = copy.parentElement.querySelector('pre').textContent;
+        try {
+          await navigator.clipboard.writeText(text);
+          copy.textContent = 'Copied ✓';
+        } catch {
+          copy.textContent = 'Press Ctrl+C';
+        }
+        setTimeout(() => (copy.textContent = 'Copy'), 1500);
+      }
+      if (e.target.closest('[data-print]')) window.print();
+    });
+  </script>
+</body>
+</html>
