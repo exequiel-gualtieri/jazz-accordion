@@ -67,6 +67,11 @@ Load a theme's CSS and set the `theme` attribute:
 
 `themes/all.css` bundles all of them (2.2 kB gzip).
 
+### Pro themes (coming soon)
+
+Five premium themes inspired by sci-fi film and game interfaces: **holo**, **amber**, **tactical**, **cockpit** and **haze**.
+[See them on the website](https://exequiel-gualtieri.github.io/jazz-accordion/#pro). Star or watch this repo to hear about the launch.
+
 ### Make your own
 
 A theme is just variables:

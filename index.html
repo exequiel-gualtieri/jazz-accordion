@@ -136,6 +136,18 @@
     .stage[data-bg='paper'] { background: #f6f0e1; }
     .stage[data-bg='default'] { background: #ffffff; color: #111827; }
 
+    /* Pro showcase */
+    .pro-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    @media (max-width: 380px) { .pro-grid { grid-template-columns: 1fr; } }
+    .pro-card { margin: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--bg-2); }
+    .pro-card img { display: block; width: 100%; height: auto; }
+    .pro-card figcaption { padding: 0.75rem 1rem; font-size: 0.875rem; color: var(--muted); border-top: 1px solid var(--line); }
+    .pro-card figcaption b { color: var(--text); font-family: var(--mono); margin-right: 0.5rem; }
+    .pro-cta { display: flex; flex-direction: column; justify-content: center; gap: 0.75rem; padding: 1.5rem; border-color: rgb(0 229 255 / 0.4); }
+    .pro-cta h3, .pro-cta p { margin: 0; }
+    .pro-cta p { color: var(--muted); }
+    .pro-cta .btn { align-self: flex-start; }
+
     /* Playground */
     .playground { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; }
     @media (max-width: 900px) { .playground { grid-template-columns: 1fr; } }
@@ -185,6 +197,7 @@
         <a href="#why">Why</a>
         <a href="#install" class="keep">Install</a>
         <a href="#themes" class="keep">Themes</a>
+        <a href="#pro" class="keep">Pro</a>
         <a href="#playground">Playground</a>
         <a href="#api" class="keep">API</a>
         <a href="#faq">FAQ</a>
@@ -308,6 +321,27 @@
         <h2>Nine themes, one attribute</h2>
         <p class="section-lead">Load the theme's CSS and set <code>theme="…"</code>. Every theme is plain CSS variables, so you can copy one and make it your own.</p>
         <div class="themes" id="theme-gallery"></div>
+      </div>
+    </section>
+
+    <!-- ───────────── PRO ───────────── -->
+    <section id="pro">
+      <div class="wrap">
+        <span class="eyebrow">Pro · coming soon</span>
+        <h2 style="margin-top:1rem">Pro themes: interfaces straight out of sci-fi</h2>
+        <p class="section-lead">Five premium themes inspired by film and game interfaces: holograms, retro CRT consoles, tactical displays, cockpits and dystopian cities. Same component, same API. Load one stylesheet and set <code>theme="holo"</code>.</p>
+        <div class="pro-grid">
+          <figure class="pro-card"><img src="./assets/pro/holo.png" alt="Holo theme: blue holographic accordion with corner brackets and scanlines" width="560" height="426" loading="lazy" /><figcaption><b>holo</b> Projected hologram, corner brackets, scanlines</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/amber.png" alt="Amber theme: retro amber CRT console accordion with blinking cursor" width="560" height="403" loading="lazy" /><figcaption><b>amber</b> Retro-futurist CRT, blinking cursor</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/tactical.png" alt="Tactical theme: gunmetal accordion with orange target brackets and hazard stripes" width="560" height="441" loading="lazy" /><figcaption><b>tactical</b> Targeting UI, hazard stripes</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/cockpit.png" alt="Cockpit theme: minimal white thin type on dark glass with tick marks" width="560" height="426" loading="lazy" /><figcaption><b>cockpit</b> Clean flight deck on dark glass</figcaption></figure>
+          <figure class="pro-card"><img src="./assets/pro/haze.png" alt="Haze theme: orange smog accordion with teal indicators" width="560" height="424" loading="lazy" /><figcaption><b>haze</b> Dystopian orange haze, teal signals</figcaption></figure>
+          <div class="pro-card pro-cta">
+            <h3>Get notified</h3>
+            <p>Pro themes are launching soon. Star or watch the repository to hear about the release.</p>
+            <a class="btn primary" href="https://github.com/exequiel-gualtieri/jazz-accordion" rel="noopener">★ Star on GitHub</a>
+          </div>
+        </div>
       </div>
     </section>
 
