@@ -88,6 +88,14 @@ test.describe('basics & ARIA', () => {
     expect(await page.evaluate(() => window.pwned)).toBeUndefined();
   });
 
+  test('themes can choose the indicator via --jz-indicator; attributes win', async ({ page }) => {
+    await mount(page, `<style>jazz-accordion { --jz-indicator: plus; }</style>
+      <jazz-accordion><jazz-accordion-item label="a">a</jazz-accordion-item>
+      <jazz-accordion-item label="b" indicator="arrow">b</jazz-accordion-item></jazz-accordion>`);
+    const types = await page.locator('jazz-accordion-item').evaluateAll((els) => els.map((e) => e.shadowRoot.querySelector('.item').dataset.indicator));
+    expect(types).toEqual(['plus', 'arrow']);
+  });
+
   test('region role is dropped when more than 6 panels can be open (APG)', async ({ page }) => {
     const items = Array.from({ length: 7 }, (_, i) => `<jazz-accordion-item label="${i}">${i}</jazz-accordion-item>`).join('');
     await mount(page, `<jazz-accordion multiple>${items}</jazz-accordion>`);
@@ -199,6 +207,29 @@ test.describe('print', () => {
     expect(await panelVisible(page, 0)).toBe(false);
     expect(await panelVisible(page, 1)).toBe(false);
     expect(await panelVisible(page, 2)).toBe(true);
+  });
+
+  test('disabled closed items are not leaked to paper', async ({ page }) => {
+    await mount(page, `<jazz-accordion><jazz-accordion-item label="Secret" disabled>Classified</jazz-accordion-item></jazz-accordion>`);
+    await page.emulateMedia({ media: 'print' });
+    expect(await panelVisible(page, 0)).toBe(false);
+  });
+
+  test('theme colors, glows and clip-paths are reset to ink-friendly values', async ({ page }) => {
+    await mount(page, `<style>
+        jazz-accordion { --jz-header-color: rgb(0, 255, 255); --jz-item-bg: rgb(0, 0, 0); }
+        jazz-accordion > jazz-accordion-item::part(trigger) { text-shadow: 0 0 8px cyan; }
+        jazz-accordion > jazz-accordion-item::part(item) { clip-path: inset(4px); }
+      </style>
+      <jazz-accordion><jazz-accordion-item label="A">a</jazz-accordion-item></jazz-accordion>`);
+    const read = () => page.locator('jazz-accordion-item').evaluate((el) => {
+      const t = getComputedStyle(el.shadowRoot.querySelector('.trigger'));
+      const i = getComputedStyle(el.shadowRoot.querySelector('.item'));
+      return [t.color, t.textShadow, i.clipPath, i.backgroundColor];
+    });
+    expect((await read())[0]).toBe('rgb(0, 255, 255)');
+    await page.emulateMedia({ media: 'print' });
+    expect(await read()).toEqual(['rgb(0, 0, 0)', 'none', 'none', 'rgba(0, 0, 0, 0)']);
   });
 
   test('lazy content is rendered before printing', async ({ page }) => {

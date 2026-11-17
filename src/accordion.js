@@ -56,7 +56,7 @@ export class JazzAccordion extends HTMLElement {
   #schemaScript = null;
   #filtered = new WeakSet();
   #query = '';
-  #onHashChange = () => this.#openFromHash(true);
+  #onHashChange = () => this.#openFromHash('auto');
   #onBeforePrint = () => this.#prepareForPrint();
 
   constructor() {
@@ -201,7 +201,7 @@ export class JazzAccordion extends HTMLElement {
     if (!this.#initialized && items.length) {
       this.#initialized = true;
       this.#restore();
-      this.#openFromHash(false);
+      this.#openFromHash('instant');
     }
     this.#enforceRules();
     this.#updateSchema();
@@ -307,7 +307,7 @@ export class JazzAccordion extends HTMLElement {
     });
   }
 
-  #openFromHash(scroll) {
+  #openFromHash(scroll) { // scroll: false | 'auto' (page's scroll-behavior) | 'instant'
     if (!this.hasAttribute('deep-link')) return;
     let id;
     try {
@@ -326,7 +326,7 @@ export class JazzAccordion extends HTMLElement {
       item._set?.(true, { animate: false, source: 'hash' });
       node = item.parentElement;
     }
-    if (scroll) requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+    if (scroll) requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: scroll }));
   }
 
   #prepareForPrint() {

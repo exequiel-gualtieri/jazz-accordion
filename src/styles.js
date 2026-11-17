@@ -131,21 +131,30 @@ export const itemStyles = /* css */ `
 }
 
 /* ── Print ─────────────────────────────────────────────────────────────
-   Collapsed content is printed by default (print="expanded"). Colors are
-   reset to ink-friendly values; override them with ::part() inside an
-   @media print block if you want your theme on paper.                    */
+   Collapsed content is printed by default (print="expanded"). Themes are
+   reset to ink-friendly values (!important inside a shadow root also wins
+   over outer ::part() rules, so glows, clip-paths and dark backgrounds
+   never reach paper). Customize with the --jz-print-* variables.         */
 @media print {
-  .item {
-    background: transparent;
-    border: 1px solid #999;
-    border-radius: 0;
-    box-shadow: none;
+  .item, .trigger, .indicator, .indicator .v { transition: none !important; }
+  .item, .item[data-open] {
+    background: var(--jz-print-bg, transparent) !important;
+    border: var(--jz-print-border, 1px solid #999) !important;
+    border-radius: var(--jz-print-radius, 0) !important;
+    box-shadow: none !important;
+    clip-path: none !important;
     overflow: visible;
   }
-  .trigger, .content { background: transparent; color: #000; }
+  .trigger, .item[data-open] .trigger, .content, .subtitle {
+    background: transparent !important;
+    color: var(--jz-print-color, #000) !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+  .indicator { filter: none !important; }
   .trigger { padding-block: 0.5rem; break-after: avoid; }
   .item[data-print='expanded'] .indicator { display: none; }
-  .item[data-print='expanded'] .panel {
+  .item[data-print='expanded']:not([data-disabled]:not([data-open])) .panel {
     display: block !important;
     content-visibility: visible !important;
     block-size: auto !important;
@@ -178,6 +187,7 @@ export const accordionStyles = /* css */ `
 .search-wrap { position: relative; flex: 1 1 14rem; min-inline-size: 0; display: flex; }
 .search {
   flex: 1;
+  inline-size: 100%;
   min-inline-size: 0;
   box-sizing: border-box;
   font: inherit;
