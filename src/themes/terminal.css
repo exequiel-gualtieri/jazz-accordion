@@ -1,0 +1,37 @@
+/* jazz-accordion · theme "terminal" — retro phosphor CRT */
+:is(jazz-accordion, jazz-accordion-item)[theme='terminal'] {
+  --jz-accent: #33ff66;
+  --jz-color: #33ff66;
+  --jz-bg: #050a05;
+  --jz-font-family: 'IBM Plex Mono', 'Courier New', ui-monospace, monospace;
+  --jz-item-bg: #050a05;
+  --jz-border: 1px solid #1a5c2a;
+  --jz-border-open: 1px solid #33ff66;
+  --jz-radius: 0;
+  --jz-gap: 0.25rem;
+  --jz-header-color: #33ff66;
+  --jz-header-bg-hover: #0c1f0f;
+  --jz-header-bg-open: #33ff66;
+  --jz-header-color-open: #050a05;
+  --jz-header-font-weight: 400;
+  --jz-header-padding: 0.7rem 1rem;
+  --jz-indicator-color: currentColor;
+  --jz-content-color: #8dffa8;
+  --jz-content-padding: 1rem;
+  --jz-focus-ring: 1px dashed #b6ffc8;
+  --jz-focus-offset: -4px;
+  --jz-duration: 160ms;
+  --jz-easing: steps(6, end);
+  --jz-search-bg: #050a05;
+  --jz-search-border: 1px solid #1a5c2a;
+  --jz-button-border: 1px solid #1a5c2a;
+  --jz-highlight-bg: #33ff66;
+  --jz-highlight-color: #050a05;
+  color-scheme: dark;
+}
+:is(jazz-accordion[theme='terminal'] > jazz-accordion-item, jazz-accordion-item[theme='terminal'])::part(title)::before {
+  content: '> ';
+}
+:is(jazz-accordion[theme='terminal'] > jazz-accordion-item, jazz-accordion-item[theme='terminal'])::part(trigger) {
+  text-shadow: 0 0 6px rgb(51 255 102 / 0.6);
+}

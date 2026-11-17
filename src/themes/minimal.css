@@ -1,0 +1,23 @@
+/* jazz-accordion · theme "minimal" — hairlines only, editorial and quiet */
+:is(jazz-accordion, jazz-accordion-item)[theme='minimal'] {
+  --jz-item-bg: transparent;
+  --jz-border: 0;
+  --jz-radius: 0;
+  --jz-gap: 0;
+  --jz-header-padding: 1.15rem 0;
+  --jz-header-bg-hover: transparent;
+  --jz-header-font-weight: 500;
+  --jz-header-font-size: 1.05rem;
+  --jz-indicator: plus;
+  --jz-indicator-size: 1em;
+  --jz-indicator-stroke: 1.5;
+  --jz-content-padding: 0 0 1.25rem;
+  --jz-content-color: color-mix(in srgb, currentColor 75%, transparent);
+  --jz-focus-offset: 2px;
+}
+:is(jazz-accordion[theme='minimal'] > jazz-accordion-item, jazz-accordion-item[theme='minimal'])::part(item) {
+  border-block-end: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+:is(jazz-accordion[theme='minimal'] > jazz-accordion-item, jazz-accordion-item[theme='minimal'])::part(trigger):hover {
+  opacity: 0.75;
+}

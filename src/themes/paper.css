@@ -1,0 +1,25 @@
+/* jazz-accordion · theme "paper" — warm editorial, serif headings */
+:is(jazz-accordion, jazz-accordion-item)[theme='paper'] {
+  --jz-accent: #9a3412;
+  --jz-color: #2d2a26;
+  --jz-item-bg: #fffdf7;
+  --jz-border: 1px solid #e7dfcc;
+  --jz-border-open: 1px solid #d6c7a1;
+  --jz-radius: 0.375rem;
+  --jz-shadow: 0 1px 0 #efe7d4;
+  --jz-shadow-open: 0 10px 30px -18px rgb(80 60 20 / 0.45);
+  --jz-header-font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --jz-header-font-size: 1.15rem;
+  --jz-header-font-weight: 600;
+  --jz-header-bg-hover: #fbf6ea;
+  --jz-indicator: arrow;
+  --jz-indicator-color: #9a3412;
+  --jz-content-color: #4a453d;
+  --jz-content-line-height: 1.75;
+  --jz-search-bg: #fffdf7;
+  --jz-search-border: 1px solid #d6c7a1;
+  --jz-button-bg: #fffdf7;
+  --jz-button-border: 1px solid #d6c7a1;
+  --jz-highlight-bg: #fcd9a8;
+  color-scheme: light;
+}

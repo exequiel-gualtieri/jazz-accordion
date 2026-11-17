@@ -1,0 +1,29 @@
+/* jazz-accordion · theme "neon" — synthwave glow */
+:is(jazz-accordion, jazz-accordion-item)[theme='neon'] {
+  --jz-accent: #ff4fd8;
+  --jz-color: #f5e9ff;
+  --jz-item-bg: linear-gradient(135deg, #1a0b2e, #12091f);
+  --jz-border: 1px solid rgb(255 79 216 / 0.35);
+  --jz-border-open: 1px solid #ff4fd8;
+  --jz-radius: 0.9rem;
+  --jz-gap: 0.75rem;
+  --jz-shadow-open: 0 0 0 1px rgb(255 79 216 / 0.4), 0 0 28px rgb(255 79 216 / 0.35), 0 0 60px rgb(124 58 237 / 0.25);
+  --jz-header-bg-hover: rgb(255 79 216 / 0.08);
+  --jz-header-color-open: #ffffff;
+  --jz-indicator-color: #22d3ee;
+  --jz-content-color: #d9c8f0;
+  --jz-focus-ring: 2px solid #22d3ee;
+  --jz-search-bg: #12091f;
+  --jz-search-border: 1px solid rgb(255 79 216 / 0.45);
+  --jz-button-bg: #1a0b2e;
+  --jz-button-border: 1px solid rgb(255 79 216 / 0.45);
+  --jz-highlight-bg: #22d3ee;
+  --jz-highlight-color: #12091f;
+  color-scheme: dark;
+}
+:is(jazz-accordion[theme='neon'] > jazz-accordion-item, jazz-accordion-item[theme='neon'])::part(indicator) {
+  filter: drop-shadow(0 0 6px #22d3ee);
+}
+:is(jazz-accordion[theme='neon'] > jazz-accordion-item[open], jazz-accordion-item[theme='neon'][open])::part(title) {
+  text-shadow: 0 0 10px rgb(255 79 216 / 0.8);
+}

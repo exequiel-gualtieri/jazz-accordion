@@ -1,0 +1,22 @@
+/* jazz-accordion · theme "dark" — calm, high-contrast dark UI */
+:is(jazz-accordion, jazz-accordion-item)[theme='dark'] {
+  --jz-accent: #8ab4ff;
+  --jz-color: #e6e8ee;
+  --jz-item-bg: #171a21;
+  --jz-border: 1px solid #2a2f3a;
+  --jz-border-open: 1px solid #3b4456;
+  --jz-radius: 0.75rem;
+  --jz-header-bg-hover: #1e222b;
+  --jz-header-bg-open: #1b1f28;
+  --jz-header-color-open: #ffffff;
+  --jz-indicator-color: #8ab4ff;
+  --jz-content-color: #b9bfcc;
+  --jz-shadow-open: 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --jz-search-bg: #11141a;
+  --jz-search-border: 1px solid #2a2f3a;
+  --jz-button-bg: #171a21;
+  --jz-button-border: 1px solid #2a2f3a;
+  --jz-highlight-bg: #8ab4ff;
+  --jz-highlight-color: #0b0d12;
+  color-scheme: dark;
+}

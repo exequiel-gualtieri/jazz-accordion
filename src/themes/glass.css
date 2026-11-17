@@ -1,0 +1,32 @@
+/* jazz-accordion · theme "glass" — frosted glassmorphism (best over a colorful background) */
+:is(jazz-accordion, jazz-accordion-item)[theme='glass'] {
+  --jz-accent: #ffffff;
+  --jz-color: #ffffff;
+  --jz-item-bg: rgb(255 255 255 / 0.12);
+  --jz-border: 1px solid rgb(255 255 255 / 0.28);
+  --jz-border-open: 1px solid rgb(255 255 255 / 0.5);
+  --jz-radius: 1.1rem;
+  --jz-gap: 0.75rem;
+  --jz-shadow: 0 8px 32px rgb(15 23 42 / 0.18);
+  --jz-shadow-open: 0 16px 48px rgb(15 23 42 / 0.28);
+  --jz-header-bg-hover: rgb(255 255 255 / 0.08);
+  --jz-header-padding: 1.1rem 1.4rem;
+  --jz-content-color: rgb(255 255 255 / 0.9);
+  --jz-content-padding: 0 1.4rem 1.4rem;
+  --jz-focus-ring: 2px solid #ffffff;
+  --jz-search-bg: rgb(255 255 255 / 0.14);
+  --jz-search-border: 1px solid rgb(255 255 255 / 0.3);
+  --jz-button-bg: rgb(255 255 255 / 0.14);
+  --jz-button-border: 1px solid rgb(255 255 255 / 0.3);
+  --jz-highlight-bg: rgb(255 255 255 / 0.85);
+  --jz-highlight-color: #1e1b4b;
+}
+:is(jazz-accordion[theme='glass'] > jazz-accordion-item, jazz-accordion-item[theme='glass'])::part(item) {
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+}
+jazz-accordion[theme='glass']::part(search),
+jazz-accordion[theme='glass']::part(control-button) {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}

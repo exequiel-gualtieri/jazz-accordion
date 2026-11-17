@@ -1,0 +1,29 @@
+/* jazz-accordion · theme "corporate" — sober, institutional, WCAG AA contrast.
+   A good fit for public sector, healthcare, banking and legal sites. */
+:is(jazz-accordion, jazz-accordion-item)[theme='corporate'] {
+  --jz-accent: #0b4f9c;
+  --jz-color: #1a1f29;
+  --jz-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --jz-item-bg: #ffffff;
+  --jz-border: 1px solid #c9d1db;
+  --jz-border-open: 1px solid #0b4f9c;
+  --jz-radius: 0.25rem;
+  --jz-header-bg: #f4f6f9;
+  --jz-header-bg-hover: #e8edf4;
+  --jz-header-bg-open: #0b4f9c;
+  --jz-header-color: #0b2a4f;
+  --jz-header-color-open: #ffffff;
+  --jz-indicator-color: currentColor;
+  --jz-content-color: #2b3340;
+  --jz-content-padding: 1rem 1.25rem 1.25rem;
+  --jz-focus-ring: 3px solid #f2a900;
+  --jz-focus-offset: 0px;
+  --jz-search-bg: #ffffff;
+  --jz-search-border: 1px solid #8a96a8;
+  --jz-button-bg: #ffffff;
+  --jz-button-border: 1px solid #0b4f9c;
+  --jz-button-color: #0b4f9c;
+  --jz-highlight-bg: #ffe08a;
+  --jz-highlight-color: #1a1f29;
+  color-scheme: light;
+}

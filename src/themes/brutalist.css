@@ -1,0 +1,42 @@
+/* jazz-accordion · theme "brutalist" — thick borders, hard shadows, loud type */
+:is(jazz-accordion, jazz-accordion-item)[theme='brutalist'] {
+  --jz-accent: #000000;
+  --jz-color: #000000;
+  --jz-font-family: 'Space Grotesk', 'Arial Black', system-ui, sans-serif;
+  --jz-item-bg: #ffffff;
+  --jz-border: 3px solid #000000;
+  --jz-radius: 0;
+  --jz-gap: 1rem;
+  --jz-shadow: 6px 6px 0 #000000;
+  --jz-shadow-open: 8px 8px 0 #000000;
+  --jz-header-bg: #ffe14d;
+  --jz-header-bg-hover: #ffd400;
+  --jz-header-bg-open: #ff5c8a;
+  --jz-header-color: #000000;
+  --jz-header-font-weight: 800;
+  --jz-header-font-size: 1.1rem;
+  --jz-header-text-transform: uppercase;
+  --jz-indicator: plus;
+  --jz-indicator-stroke: 3;
+  --jz-content-color: #000000;
+  --jz-divider: 3px solid #000000;
+  --jz-content-padding: 1rem 1.25rem 1.25rem;
+  --jz-focus-ring: 3px dashed #000000;
+  --jz-focus-offset: -8px;
+  --jz-search-border: 3px solid #000000;
+  --jz-search-bg: #ffffff;
+  --jz-search-color: #000000;
+  --jz-button-border: 3px solid #000000;
+  --jz-button-bg: #ffffff;
+  --jz-button-color: #000000;
+  --jz-highlight-bg: #ff5c8a;
+  --jz-highlight-color: #000000;
+  color-scheme: light;
+}
+:is(jazz-accordion[theme='brutalist'] > jazz-accordion-item, jazz-accordion-item[theme='brutalist'])::part(item) {
+  margin-inline-end: 8px;
+}
+jazz-accordion[theme='brutalist']::part(control-button) {
+  font-weight: 800;
+  box-shadow: 3px 3px 0 #000000;
+}

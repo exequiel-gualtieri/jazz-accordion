@@ -19,7 +19,7 @@ const INDICATORS = {
 };
 
 /** Attributes an item can inherit from its parent <jazz-accordion>. */
-export const INHERITED = ['indicator', 'indicator-position', 'heading-level', 'print', 'no-animation'];
+export const INHERITED = ['indicator', 'indicator-position', 'heading-level', 'print', 'no-animation', 'theme'];
 
 /**
  * <jazz-accordion-item>
@@ -193,7 +193,10 @@ export class JazzAccordionItem extends HTMLElement {
   /** Re-reads configuration (own attributes, then the parent accordion's). */
   sync() {
     const acc = this.accordion;
-    const read = (name, fallback) => this.getAttribute(name) ?? acc?.getAttribute(name) ?? fallback;
+    // Priority: own attribute → accordion attribute → theme CSS variable → default.
+    const css = this.isConnected ? getComputedStyle(this) : null;
+    const read = (name, fallback) =>
+      this.getAttribute(name) ?? acc?.getAttribute(name) ?? (css?.getPropertyValue(`--jz-${name}`).trim() || fallback);
     const { base, heading, panel, indicator } = this.#parts;
 
     const type = oneOf(read('indicator', 'chevron'), Object.keys(INDICATORS), 'chevron');

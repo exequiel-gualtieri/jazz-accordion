@@ -1,0 +1,50 @@
+/* jazz-accordion · theme "hud" — sci-fi heads-up display */
+:is(jazz-accordion, jazz-accordion-item)[theme='hud'] {
+  --jz-accent: #00e5ff;
+  --jz-color: #c8f6ff;
+  --jz-font-family: 'JetBrains Mono', 'Share Tech Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --jz-item-bg: linear-gradient(180deg, rgb(0 229 255 / 0.06), rgb(0 229 255 / 0.015));
+  --jz-border: 1px solid rgb(0 229 255 / 0.35);
+  --jz-border-open: 1px solid rgb(0 229 255 / 0.85);
+  --jz-radius: 0;
+  --jz-gap: 0.75rem;
+  --jz-shadow-open: 0 0 0 1px rgb(0 229 255 / 0.25), 0 0 24px rgb(0 229 255 / 0.18), inset 0 0 24px rgb(0 229 255 / 0.08);
+  --jz-header-color: #7df9ff;
+  --jz-header-color-open: #ffffff;
+  --jz-header-bg-hover: rgb(0 229 255 / 0.08);
+  --jz-header-bg-open: rgb(0 229 255 / 0.12);
+  --jz-header-font-size: 0.875rem;
+  --jz-header-font-weight: 500;
+  --jz-header-letter-spacing: 0.14em;
+  --jz-header-text-transform: uppercase;
+  --jz-indicator: plus;
+  --jz-indicator-color: #00e5ff;
+  --jz-indicator-stroke: 1.5;
+  --jz-content-color: #9fe9f5;
+  --jz-content-font-size: 0.9rem;
+  --jz-divider: 1px dashed rgb(0 229 255 / 0.3);
+  --jz-content-padding: 1rem 1.25rem 1.25rem;
+  --jz-focus-ring: 1px solid #ffffff;
+  --jz-focus-offset: -4px;
+  --jz-search-bg: rgb(0 229 255 / 0.04);
+  --jz-search-border: 1px solid rgb(0 229 255 / 0.45);
+  --jz-button-border: 1px solid rgb(0 229 255 / 0.45);
+  --jz-button-color: #7df9ff;
+  --jz-highlight-bg: #00e5ff;
+  --jz-highlight-color: #001014;
+  --jz-easing: cubic-bezier(0.2, 0.9, 0.1, 1);
+  color-scheme: dark;
+}
+:is(jazz-accordion[theme='hud'] > jazz-accordion-item, jazz-accordion-item[theme='hud'])::part(item) {
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+:is(jazz-accordion[theme='hud'] > jazz-accordion-item, jazz-accordion-item[theme='hud'])::part(trigger) {
+  text-shadow: 0 0 8px rgb(0 229 255 / 0.55);
+}
+:is(jazz-accordion[theme='hud'] > jazz-accordion-item, jazz-accordion-item[theme='hud'])::part(indicator) {
+  filter: drop-shadow(0 0 4px #00e5ff);
+}
+jazz-accordion[theme='hud']::part(control-button) {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
